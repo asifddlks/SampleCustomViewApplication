@@ -6,6 +6,10 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.Px
+
+
+
 
 //
 // Created by Asif Ahmed on 23/5/22.
@@ -74,5 +78,9 @@ class CustomView:View {
                 canvas.drawCircle(xStopPointsLine2[i], yStopPointsLine2[i], 12f, paint)
             }
         }
+    }
+
+    override fun setMinimumHeight(minHeight: Int) {
+        super.setMinimumHeight(200)
     }
 }

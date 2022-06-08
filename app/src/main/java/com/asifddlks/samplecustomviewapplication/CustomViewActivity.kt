@@ -9,6 +9,9 @@ class CustomViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_custom_view)
 
+        val customEditTextView = findViewById<CustomEditTextView>(R.id.customEditTextView)
+
+        customEditTextView.setText("hello TVL")
 
     }
 }
