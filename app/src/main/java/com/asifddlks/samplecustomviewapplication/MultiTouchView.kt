@@ -6,10 +6,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
-import android.view.View.MeasureSpec
 import android.view.MotionEvent
 import android.view.View
-import java.lang.Exception
+import kotlin.math.abs
 
 //
 // Created by Asif Ahmed on 14/6/22.
@@ -23,6 +22,8 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
     var y = FloatArray(MAX_POINT_CNT)
     var isTouch = BooleanArray(MAX_POINT_CNT)
 
+    var dataList:List<ChartModel> = ArrayList()
+
 
     override fun onDraw(canvas: Canvas) {
         if (isTouch[0]) {
@@ -30,15 +31,40 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             paint.strokeWidth = 10f
             paint.color = Color.BLUE
             //canvas.drawCircle(x[0], y[0], 50f, paint)
-            canvas.drawLine(x[0],0f,x[0],height.toFloat(),paint)
+            canvas.drawLine(findNearestPoint(x[0],dataList),0f,findNearestPoint(x[0],dataList),height.toFloat(),paint)
+
+            paint.style = Paint.Style.FILL
+            paint.color = Color.BLACK
+            paint.textSize = 20f
+            canvas.drawText("x: ${findNearestPoint(x[0],dataList)} y: ${y[0]}",findNearestPoint(x[0],dataList),y[0]-80f,paint)
+
         }
         if (isTouch[1]) {
             paint.style = Paint.Style.STROKE
             paint.strokeWidth = 10f
             paint.color = Color.RED
             //canvas.drawCircle(x[1], y[1], 50f, paint)
-            canvas.drawLine(x[1],0f,x[1],height.toFloat(),paint)
+
+
+            canvas.drawLine(findNearestPoint(x[1],dataList),0f,findNearestPoint(x[1],dataList),height.toFloat(),paint)
+
+            paint.style = Paint.Style.FILL
+            paint.color = Color.BLACK
+            paint.textSize = 20f
+            canvas.drawText("x: ${findNearestPoint(x[1],dataList)} y: ${y[1]}",findNearestPoint(x[1],dataList),y[1]-80f,paint)
         }
+    }
+
+    private fun findNearestPoint(touchBarValue: Float, dataList: List<ChartModel>): Float {
+        var nearestValue = 0f
+        var distance = Float.MAX_VALUE
+        for(data in dataList){
+            if(distance > abs(data.x - touchBarValue)){
+                distance = abs(data.x - touchBarValue)
+                nearestValue = data.x
+            }
+        }
+        return nearestValue
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -79,5 +105,10 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
         }
 
         return true
+    }
+
+    fun drawChart(dataList:List<ChartModel>){
+        this.dataList = dataList
+        invalidate()
     }
 }

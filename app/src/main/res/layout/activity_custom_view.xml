@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".CustomViewActivity">
 
-    <com.asifddlks.samplecustomviewapplication.CustomView
-        android:id="@+id/customView"
+    <com.asifddlks.samplecustomviewapplication.CustomChartView
+        android:id="@+id/customChartView"
         android:layout_width="0dp"
         android:layout_height="400dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -15,13 +15,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.asifddlks.samplecustomviewapplication.MultiTouchView
-        android:id="@+id/drawingView"
+        android:id="@+id/multiTouchView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="@id/customView"
-        app:layout_constraintEnd_toEndOf="@id/customView"
-        app:layout_constraintTop_toTopOf="@id/customView"
-        app:layout_constraintBottom_toBottomOf="@id/customView"/>
+        app:layout_constraintStart_toStartOf="@id/customChartView"
+        app:layout_constraintEnd_toEndOf="@id/customChartView"
+        app:layout_constraintTop_toTopOf="@id/customChartView"
+        app:layout_constraintBottom_toBottomOf="@id/customChartView"/>
 
     <com.asifddlks.samplecustomviewapplication.CustomEditTextView
         android:id="@+id/customEditTextView"
@@ -29,6 +29,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customView" />
+        app:layout_constraintTop_toBottomOf="@+id/customChartView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
