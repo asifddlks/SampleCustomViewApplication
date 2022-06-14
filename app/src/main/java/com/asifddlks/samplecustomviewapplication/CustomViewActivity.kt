@@ -13,7 +13,7 @@ class CustomViewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_custom_view)
 
         val customEditTextView = findViewById<CustomEditTextView>(R.id.customEditTextView)
-        val drawingView = findViewById<DrawingView>(R.id.drawingView)
+        val drawingView = findViewById<MultiTouchView>(R.id.drawingView)
 
         customEditTextView.setText("hello TVL")
 
