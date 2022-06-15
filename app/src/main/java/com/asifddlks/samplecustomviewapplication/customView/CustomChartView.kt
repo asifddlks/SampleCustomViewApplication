@@ -18,6 +18,11 @@ class CustomChartView:View {
 
     var dataList:List<ChartModel> = ArrayList()
 
+    var upperLimit: Float = 0f
+    var lowerLimit: Float = Float.MAX_VALUE
+
+    var constraintDifference = 0f
+
     constructor(context: Context, attrs: AttributeSet):super(context,attrs){
         //paint.color = Color.BLUE
     }
@@ -27,107 +32,61 @@ class CustomChartView:View {
 
         val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
         val parentHeight = MeasureSpec.getSize(heightMeasureSpec)
-        setMeasuredDimension(parentWidth,parentHeight)
+        setMeasuredDimension(parentWidth,(upperLimit.toInt()-lowerLimit.toInt()))
     }
 
     override fun onDraw(canvas: Canvas) {
 
         canvas.drawColor(Color.WHITE)
 
+        constraintDifference = height - upperLimit
+        //constraintDifference = 0f
+
+        //move canvas to lower limit
+        //canvas.save()
+        //canvas.translate(0f,lowerLimit+constraintDifference)
+        //canvas.scale(2.5f,2.5f)
+
+        paint.color = Color.DKGRAY
+        paint.strokeWidth = 20f
+        canvas.drawLine(0f, height - (upperLimit + constraintDifference), width.toFloat(), height - (upperLimit + constraintDifference), paint)
+        canvas.drawLine(0f, height - (lowerLimit + constraintDifference), width.toFloat(), height - (lowerLimit + constraintDifference), paint)
+
         for (i in dataList.indices){
-            paint.color = Color.MAGENTA
+            paint.color = Color.GREEN
             paint.strokeWidth = 10f
 
             if (i == 0) {
-                canvas.drawLine(
-                    dataList[i].x,
-                    height-dataList[i].y, dataList[i + 1].x, height-dataList[i + 1].y, paint
-                )
-                paint.color = Color.GREEN
-                canvas.drawLine(
-                    dataList[i].x,
-                    height-dataList[i].y, dataList[i + 1].x, height-dataList[i + 1].y, paint
-                )
+                //Draw First Line
+                val startX = dataList[i].x
+                val startY = height-(dataList[i].y + constraintDifference)
+                val stopX = dataList[i + 1].x
+                val stopY = height-(dataList[i + 1].y + constraintDifference)
+
+                canvas.drawLine(startX, startY, stopX, stopY, paint)
+
                 paint.color = Color.RED
-                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
-                paint.color = Color.GREEN
-                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
+                canvas.drawCircle(startX, startY, 12f, paint)
             } else if (i > 0 && i < dataList.size - 1) {
-                canvas.drawLine(
-                    dataList[i].x,
-                    height-dataList[i].y, dataList[i + 1].x, height-dataList[i + 1].y, paint
-                )
-                paint.color = Color.RED
-                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
-                paint.color = Color.GREEN
-                canvas.drawLine(
-                    dataList[i].x,
-                    height-dataList[i].y, dataList[i + 1].x, height-dataList[i + 1].y, paint
-                )
-                paint.color = Color.GREEN
-                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
+                //Draw Middle Lines
+
+                val startX = dataList[i].x
+                val startY = height-(dataList[i].y+constraintDifference)
+                val stopX = dataList[i + 1].x
+                val stopY = height-(dataList[i + 1].y + constraintDifference)
+                canvas.drawLine(startX, startY, stopX, stopY, paint)
             } else if (i == dataList.size - 1) {
+                ////Draw Last Line -- END POINT
+
+                val startX = dataList[i].x
+                val startY = height-(dataList[i].y + constraintDifference)
+
                 paint.color = Color.RED
-                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
-                paint.color = Color.GREEN
-                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
+                canvas.drawCircle(startX, startY, 12f, paint)
             }
         }
 
-        /*canvas.drawColor(Color.WHITE)
-        paint.color = Color.GRAY
-        paint.textSize = 50f
-        paint.textAlign = Paint.Align.CENTER
-        canvas.drawText("HelloWorld", width.toFloat()/2, height.toFloat()-context.resources.displayMetrics.density*20, paint)
-        val xStopPointsLine1 = floatArrayOf(0f, 200.1f, 450.5f, 650f, 850f)
-        val yStopPointsLine1 = floatArrayOf(100f, 380f, 540f, 400f, 720f)
-        val xStopPointsLine2 = floatArrayOf(20f, 170.1f, 350.5f, 480f, 650f)
-        val yStopPointsLine2 = floatArrayOf(200f, 480f, 240f, 600f, 380f)
-
-        if(isDraw){
-            paint.color = Color.MAGENTA
-            canvas.drawLine(0f, 0f, 400f, height.toFloat(), paint)
-        }
-
-        for (i in yStopPointsLine1.indices) {
-            paint.color = Color.GRAY
-            paint.strokeWidth = 8f
-            if (i == 0) {
-                canvas.drawLine(
-                    xStopPointsLine1[i],
-                    yStopPointsLine1[i], xStopPointsLine1[i + 1], yStopPointsLine1[i + 1], paint
-                )
-                paint.color = Color.GREEN
-                canvas.drawLine(
-                    xStopPointsLine2[i],
-                    yStopPointsLine2[i], xStopPointsLine2[i + 1], yStopPointsLine2[i + 1], paint
-                )
-                paint.color = Color.RED
-                canvas.drawCircle(xStopPointsLine1[i], yStopPointsLine1[i], 12f, paint)
-                paint.color = Color.GREEN
-                canvas.drawCircle(xStopPointsLine2[i], yStopPointsLine2[i], 12f, paint)
-            } else if (i > 0 && i < yStopPointsLine1.size - 1) {
-                canvas.drawLine(
-                    xStopPointsLine1[i],
-                    yStopPointsLine1[i], xStopPointsLine1[i + 1], yStopPointsLine1[i + 1], paint
-                )
-                paint.color = Color.RED
-                canvas.drawCircle(xStopPointsLine1[i], yStopPointsLine1[i], 12f, paint)
-                paint.color = Color.GREEN
-                canvas.drawLine(
-                    xStopPointsLine2[i],
-                    yStopPointsLine2[i], xStopPointsLine2[i + 1], yStopPointsLine2[i + 1], paint
-                )
-                paint.color = Color.GREEN
-                canvas.drawCircle(xStopPointsLine2[i], yStopPointsLine2[i], 12f, paint)
-            } else if (i == yStopPointsLine1.size - 1) {
-                paint.color = Color.RED
-                canvas.drawCircle(xStopPointsLine1[i], yStopPointsLine1[i], 12f, paint)
-                paint.color = Color.GREEN
-                canvas.drawCircle(xStopPointsLine2[i], yStopPointsLine2[i], 12f, paint)
-            }
-        }*/
-
+        //canvas.restore()
 
     }
 
@@ -137,7 +96,13 @@ class CustomChartView:View {
 
     fun drawChart(dataList:List<ChartModel>){
         this.dataList = dataList
+
+        upperLimit = dataList.maxOf { it.y }
+        lowerLimit = dataList.minOf { it.y }
+
         invalidate()
     }
+
+
 
 }
