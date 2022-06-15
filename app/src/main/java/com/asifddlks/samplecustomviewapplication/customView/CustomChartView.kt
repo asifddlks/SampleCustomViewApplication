@@ -1,4 +1,4 @@
-package com.asifddlks.samplecustomviewapplication
+package com.asifddlks.samplecustomviewapplication.customView
 
 import android.content.Context
 import android.graphics.Canvas
@@ -6,8 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import androidx.annotation.Px
-import kotlin.math.min
+import com.asifddlks.samplecustomviewapplication.ChartModel
 
 
 //

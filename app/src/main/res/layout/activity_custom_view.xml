@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".CustomViewActivity">
 
-    <com.asifddlks.samplecustomviewapplication.CustomChartView
+    <com.asifddlks.samplecustomviewapplication.customView.CustomChartView
         android:id="@+id/customChartView"
         android:layout_width="0dp"
         android:layout_height="400dp"
@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.asifddlks.samplecustomviewapplication.MultiTouchView
+    <com.asifddlks.samplecustomviewapplication.customView.MultiTouchView
         android:id="@+id/multiTouchView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="@id/customChartView"
         app:layout_constraintBottom_toBottomOf="@id/customChartView"/>
 
-    <com.asifddlks.samplecustomviewapplication.CustomEditTextView
+    <com.asifddlks.samplecustomviewapplication.customView.CustomEditTextView
         android:id="@+id/customEditTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

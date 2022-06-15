@@ -2,6 +2,11 @@ package com.asifddlks.samplecustomviewapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.asifddlks.samplecustomviewapplication.customView.CustomChartView
+import com.asifddlks.samplecustomviewapplication.customView.CustomEditTextView
+import com.asifddlks.samplecustomviewapplication.customView.MultiTouchView
+import com.asifddlks.samplecustomviewapplication.utility.FileHelper
+import org.json.JSONObject
 
 class CustomViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,5 +38,27 @@ class CustomViewActivity : AppCompatActivity() {
         customChartView.drawChart(dataList)
         multiTouchView.drawChart(dataList)
 
+        /*val dataList = prepareCustomData()
+
+        customChartView.drawChart(dataList)
+        multiTouchView.drawChart(dataList)*/
+
+    }
+
+    private fun prepareCustomData(): ArrayList<ChartModel>{
+        val list: ArrayList<ChartModel> = ArrayList()
+        val jsonString:String? = FileHelper().readJSONFile(this,"stockx_dummy_data_day")
+        val jsonObject = jsonString?.let { JSONObject(it) }
+        val dataJSONArray = jsonObject?.getJSONArray("data")
+
+        for (i in 0 until (dataJSONArray?.length() ?: 0)) {
+            val jsonObjectDataItem = dataJSONArray!!.getJSONObject(i)
+
+            val time:String = jsonObjectDataItem.getString("time")
+            val closePrice:Double = jsonObjectDataItem.getDouble("close")
+
+            list.add(ChartModel(i.toFloat()*10,closePrice.toFloat()*10))
+        }
+        return list
     }
 }

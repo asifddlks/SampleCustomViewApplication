@@ -1,4 +1,4 @@
-package com.asifddlks.samplecustomviewapplication
+package com.asifddlks.samplecustomviewapplication.customView
 
 import android.content.Context
 import android.graphics.Canvas
