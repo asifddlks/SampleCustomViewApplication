@@ -42,36 +42,36 @@ class CustomChartView:View {
             if (i == 0) {
                 canvas.drawLine(
                     dataList[i].x,
-                    dataList[i].y, dataList[i + 1].x, dataList[i + 1].y, paint
+                    height-dataList[i].y, dataList[i + 1].x, height-dataList[i + 1].y, paint
                 )
                 paint.color = Color.GREEN
                 canvas.drawLine(
                     dataList[i].x,
-                    dataList[i].y, dataList[i + 1].x, dataList[i + 1].y, paint
+                    height-dataList[i].y, dataList[i + 1].x, height-dataList[i + 1].y, paint
                 )
                 paint.color = Color.RED
-                canvas.drawCircle(dataList[i].x, dataList[i].y, 12f, paint)
+                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
                 paint.color = Color.GREEN
-                canvas.drawCircle(dataList[i].x, dataList[i].y, 12f, paint)
+                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
             } else if (i > 0 && i < dataList.size - 1) {
                 canvas.drawLine(
                     dataList[i].x,
-                    dataList[i].y, dataList[i + 1].x, dataList[i + 1].y, paint
+                    height-dataList[i].y, dataList[i + 1].x, height-dataList[i + 1].y, paint
                 )
                 paint.color = Color.RED
-                canvas.drawCircle(dataList[i].x, dataList[i].y, 12f, paint)
+                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
                 paint.color = Color.GREEN
                 canvas.drawLine(
                     dataList[i].x,
-                    dataList[i].y, dataList[i + 1].x, dataList[i + 1].y, paint
+                    height-dataList[i].y, dataList[i + 1].x, height-dataList[i + 1].y, paint
                 )
                 paint.color = Color.GREEN
-                canvas.drawCircle(dataList[i].x, dataList[i].y, 12f, paint)
+                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
             } else if (i == dataList.size - 1) {
                 paint.color = Color.RED
-                canvas.drawCircle(dataList[i].x, dataList[i].y, 12f, paint)
+                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
                 paint.color = Color.GREEN
-                canvas.drawCircle(dataList[i].x, dataList[i].y, 12f, paint)
+                canvas.drawCircle(dataList[i].x, height-dataList[i].y, 12f, paint)
             }
         }
 
@@ -128,6 +128,8 @@ class CustomChartView:View {
                 canvas.drawCircle(xStopPointsLine2[i], yStopPointsLine2[i], 12f, paint)
             }
         }*/
+
+
     }
 
     override fun setMinimumHeight(minHeight: Int) {

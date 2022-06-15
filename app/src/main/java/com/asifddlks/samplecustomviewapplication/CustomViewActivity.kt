@@ -24,7 +24,7 @@ class CustomViewActivity : AppCompatActivity() {
         customChartView.draw()*/
 
         val dataList:MutableList<ChartModel> = ArrayList()
-        dataList.add(ChartModel(0f,100f))
+        dataList.add(ChartModel(0f,0f))
         dataList.add(ChartModel(200f, 380f   ))
         dataList.add(ChartModel(450f,540f, ))
         dataList.add(ChartModel(650f,400f ))

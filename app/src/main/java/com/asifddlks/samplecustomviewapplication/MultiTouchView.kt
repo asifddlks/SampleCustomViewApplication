@@ -16,11 +16,11 @@ import kotlin.math.abs
 class MultiTouchView @JvmOverloads constructor(context: Context,
                      attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
     //In this test, handle maximum of 2 pointer
-    val MAX_POINT_CNT = 2
+    val MAX_POINT_COUNT = 2
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    var x = FloatArray(MAX_POINT_CNT)
-    var y = FloatArray(MAX_POINT_CNT)
-    var isTouch = BooleanArray(MAX_POINT_CNT)
+    var x = FloatArray(MAX_POINT_COUNT)
+    var y = FloatArray(MAX_POINT_COUNT)
+    var isTouch = BooleanArray(MAX_POINT_COUNT)
 
     var dataList:List<ChartModel> = ArrayList()
 
@@ -30,41 +30,38 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             paint.style = Paint.Style.STROKE
             paint.strokeWidth = 10f
             paint.color = Color.BLUE
-            //canvas.drawCircle(x[0], y[0], 50f, paint)
-            canvas.drawLine(findNearestPoint(x[0],dataList),0f,findNearestPoint(x[0],dataList),height.toFloat(),paint)
+            canvas.drawLine(findNearestPoint(x[0],dataList).x,0f,findNearestPoint(x[0],dataList).x,height.toFloat(),paint)
 
             paint.style = Paint.Style.FILL
             paint.color = Color.BLACK
             paint.textSize = 20f
-            canvas.drawText("x: ${findNearestPoint(x[0],dataList)} y: ${y[0]}",findNearestPoint(x[0],dataList),y[0]-80f,paint)
-
+            canvas.drawText("x: ${findNearestPoint(x[0],dataList).x} y: ${findNearestPoint(x[0],dataList).y}",findNearestPoint(x[0],dataList).x+10,height-findNearestPoint(x[0],dataList).y,paint)
         }
         if (isTouch[1]) {
             paint.style = Paint.Style.STROKE
             paint.strokeWidth = 10f
             paint.color = Color.RED
-            //canvas.drawCircle(x[1], y[1], 50f, paint)
-
-
-            canvas.drawLine(findNearestPoint(x[1],dataList),0f,findNearestPoint(x[1],dataList),height.toFloat(),paint)
+            canvas.drawLine(findNearestPoint(x[1],dataList).x,0f,findNearestPoint(x[1],dataList).x,height.toFloat(),paint)
 
             paint.style = Paint.Style.FILL
             paint.color = Color.BLACK
             paint.textSize = 20f
-            canvas.drawText("x: ${findNearestPoint(x[1],dataList)} y: ${y[1]}",findNearestPoint(x[1],dataList),y[1]-80f,paint)
+            canvas.drawText("x: ${findNearestPoint(x[1],dataList).x} y: ${findNearestPoint(x[1],dataList).y}",findNearestPoint(x[1],dataList).x+10,height-findNearestPoint(x[0],dataList).y,paint)
         }
     }
 
-    private fun findNearestPoint(touchBarValue: Float, dataList: List<ChartModel>): Float {
-        var nearestValue = 0f
+    private fun findNearestPoint(touchBarValue: Float, dataList: List<ChartModel>): ChartModel {
+        var nearestXValue = 0f
+        var nearestYValue = 0f
         var distance = Float.MAX_VALUE
         for(data in dataList){
             if(distance > abs(data.x - touchBarValue)){
                 distance = abs(data.x - touchBarValue)
-                nearestValue = data.x
+                nearestXValue = data.x
+                nearestYValue = data.y
             }
         }
-        return nearestValue
+        return ChartModel(nearestXValue,nearestYValue)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -80,8 +77,8 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
         Log.d(this@MultiTouchView.javaClass.simpleName,"pointCnt: $pointCnt")
 
         try {
-            if (pointCnt <= MAX_POINT_CNT) {
-                if (pointerIndex <= MAX_POINT_CNT - 1) {
+            if (pointCnt <= MAX_POINT_COUNT) {
+                if (pointerIndex <= MAX_POINT_COUNT - 1) {
                     for (i in 0 until pointCnt) {
                         val id = motionEvent.getPointerId(i)
                         x[id] = motionEvent.getX(i)
