@@ -26,6 +26,8 @@ class CustomChartView:View {
     var heightRatio = 0f
     var widthRatio = 0f
 
+    val lineStrokeWidth = 5f
+
     constructor(context: Context, attrs: AttributeSet):super(context,attrs){
         //paint.color = Color.BLUE
     }
@@ -48,9 +50,11 @@ class CustomChartView:View {
         constraintDifference = height - upperLimit
         //constraintDifference = 0f
 
-        //move canvas to lower limit
         canvas.save()
+        //move canvas to lower limit
         //canvas.translate(0f,lowerLimit+constraintDifference)
+
+        //scale canvas respect to upper & lower limit
         canvas.scale(heightRatio,heightRatio)
 
         paint.color = Color.BLUE
@@ -60,7 +64,7 @@ class CustomChartView:View {
 
         for (i in dataList.indices){
             paint.color = Color.GREEN
-            paint.strokeWidth = 10f/heightRatio
+            paint.strokeWidth = lineStrokeWidth/heightRatio
 
             if (i == 0) {
                 //Draw First Line

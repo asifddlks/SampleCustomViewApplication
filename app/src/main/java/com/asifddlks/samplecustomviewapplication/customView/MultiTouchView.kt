@@ -25,29 +25,76 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
 
     var dataList:List<ChartModel> = ArrayList()
 
+    var upperLimit: Float = 0f
+    var lowerLimit: Float = Float.MAX_VALUE
+
+    var constraintDifference = 0f
+
+    var heightRatio = 0f
+    var widthRatio = 0f
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
+        val parentHeight = MeasureSpec.getSize(heightMeasureSpec)
+        heightRatio = (parentHeight.toFloat()/(upperLimit-lowerLimit))
+        widthRatio = (parentWidth.toFloat()/(dataList.size-1).toFloat())
+        //widthRatio = 5.5f
+        setMeasuredDimension(parentWidth,parentHeight)
+    }
 
     override fun onDraw(canvas: Canvas) {
+
+        constraintDifference = height - upperLimit
+
+        Log.d(this@MultiTouchView.javaClass.simpleName,"width: ${width}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"height: ${height}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"upperLimit: ${upperLimit}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"lowerLimit: ${lowerLimit}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"constraintDifference: ${constraintDifference}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"heightRatio: ${heightRatio}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"widthRatio: ${widthRatio}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"findNearestPoint(x[0],dataList).x: ${findNearestPoint(x[0],dataList).x}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"findNearestPoint(x[0],dataList).y: ${findNearestPoint(x[0],dataList).y}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"x[0]: ${x[0]} || y[0]: ${y[0]}")
+
         if (isTouch[0]) {
+            val startX = findNearestPoint(x[0],dataList).x*widthRatio
+            val startY = 0f
+            val stopX = findNearestPoint(x[0],dataList).x*widthRatio
+            val stopY = height.toFloat()
+
             paint.style = Paint.Style.STROKE
             paint.strokeWidth = 10f
             paint.color = Color.BLUE
-            canvas.drawLine(findNearestPoint(x[0],dataList).x,0f,findNearestPoint(x[0],dataList).x,height.toFloat(),paint)
+            canvas.drawLine(startX,startY,stopX,stopY,paint)
 
             paint.style = Paint.Style.FILL
             paint.color = Color.WHITE
             paint.textSize = 20f
-            canvas.drawText("x: ${findNearestPoint(x[0],dataList).x} y: ${findNearestPoint(x[0],dataList).y}",findNearestPoint(x[0],dataList).x+10,height-findNearestPoint(x[0],dataList).y,paint)
+
+            val drawTextPositionX = startX+10
+            val drawTextPositionY = height - ((findNearestPoint(x[0],dataList).y-lowerLimit)*heightRatio)
+            canvas.drawText("x: ${findNearestPoint(x[0],dataList).x} y: ${findNearestPoint(x[0],dataList).y}",drawTextPositionX,drawTextPositionY,paint)
         }
         if (isTouch[1]) {
+            val startX = findNearestPoint(x[1],dataList).x*widthRatio
+            val startY = 0f
+            val stopX = findNearestPoint(x[1],dataList).x*widthRatio
+            val stopY = height.toFloat()
+
             paint.style = Paint.Style.STROKE
             paint.strokeWidth = 10f
             paint.color = Color.RED
-            canvas.drawLine(findNearestPoint(x[1],dataList).x,0f,findNearestPoint(x[1],dataList).x,height.toFloat(),paint)
+            canvas.drawLine(startX,startY,stopX,stopY,paint)
 
             paint.style = Paint.Style.FILL
             paint.color = Color.WHITE
             paint.textSize = 20f
-            canvas.drawText("x: ${findNearestPoint(x[1],dataList).x} y: ${findNearestPoint(x[1],dataList).y}",findNearestPoint(x[1],dataList).x+10,height-findNearestPoint(x[1],dataList).y,paint)
+            val drawTextPositionX = startX+10
+            val drawTextPositionY = height - ((findNearestPoint(x[1],dataList).y-lowerLimit)*heightRatio)
+            canvas.drawText("x: ${findNearestPoint(x[1],dataList).x} y: ${findNearestPoint(x[1],dataList).y}",drawTextPositionX,drawTextPositionY,paint)
         }
     }
 
@@ -56,17 +103,16 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
         var nearestYValue = 0f
         var distance = Float.MAX_VALUE
         for(data in dataList){
-            if(distance > abs(data.x - touchBarValue)){
-                distance = abs(data.x - touchBarValue)
+            if(distance > abs(data.x - touchBarValue/widthRatio)){
+                distance = abs(data.x - touchBarValue/widthRatio)
                 nearestXValue = data.x
                 nearestYValue = data.y
+
+                //Log.d(this@MultiTouchView.javaClass.simpleName,"nearestXValue: ${nearestXValue} || nearestYValue: ${nearestYValue}")
+
             }
         }
         return ChartModel(nearestXValue,nearestYValue)
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
     }
 
     override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
@@ -107,6 +153,10 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
 
     fun drawChart(dataList:List<ChartModel>){
         this.dataList = dataList
+
+        upperLimit = dataList.maxOf { it.y }
+        lowerLimit = dataList.minOf { it.y }
+
         invalidate()
     }
 }
