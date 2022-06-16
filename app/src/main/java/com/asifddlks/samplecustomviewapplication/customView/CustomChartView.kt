@@ -26,7 +26,7 @@ class CustomChartView:View {
     var heightRatio = 0f
     var widthRatio = 0f
 
-    val lineStrokeWidth = 5f
+    val lineStrokeWidth = 2f
 
     constructor(context: Context, attrs: AttributeSet):super(context,attrs){
         //paint.color = Color.BLUE
