@@ -34,7 +34,7 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             canvas.drawLine(findNearestPoint(x[0],dataList).x,0f,findNearestPoint(x[0],dataList).x,height.toFloat(),paint)
 
             paint.style = Paint.Style.FILL
-            paint.color = Color.BLACK
+            paint.color = Color.WHITE
             paint.textSize = 20f
             canvas.drawText("x: ${findNearestPoint(x[0],dataList).x} y: ${findNearestPoint(x[0],dataList).y}",findNearestPoint(x[0],dataList).x+10,height-findNearestPoint(x[0],dataList).y,paint)
         }
@@ -45,7 +45,7 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             canvas.drawLine(findNearestPoint(x[1],dataList).x,0f,findNearestPoint(x[1],dataList).x,height.toFloat(),paint)
 
             paint.style = Paint.Style.FILL
-            paint.color = Color.BLACK
+            paint.color = Color.WHITE
             paint.textSize = 20f
             canvas.drawText("x: ${findNearestPoint(x[1],dataList).x} y: ${findNearestPoint(x[1],dataList).y}",findNearestPoint(x[1],dataList).x+10,height-findNearestPoint(x[1],dataList).y,paint)
         }

@@ -23,6 +23,9 @@ class CustomChartView:View {
 
     var constraintDifference = 0f
 
+    var heightRatio = 0f
+    var widthRatio = 0f
+
     constructor(context: Context, attrs: AttributeSet):super(context,attrs){
         //paint.color = Color.BLUE
     }
@@ -32,61 +35,64 @@ class CustomChartView:View {
 
         val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
         val parentHeight = MeasureSpec.getSize(heightMeasureSpec)
-        setMeasuredDimension(parentWidth,(upperLimit.toInt()-lowerLimit.toInt()))
+        heightRatio = (parentHeight.toFloat()/(upperLimit-lowerLimit))
+        widthRatio = (parentWidth.toFloat()/(dataList.size-1).toFloat())
+        //widthRatio = 5.5f
+        setMeasuredDimension(parentWidth,parentHeight)
     }
 
     override fun onDraw(canvas: Canvas) {
 
-        canvas.drawColor(Color.WHITE)
+        canvas.drawColor(Color.BLACK)
 
         constraintDifference = height - upperLimit
         //constraintDifference = 0f
 
         //move canvas to lower limit
-        //canvas.save()
+        canvas.save()
         //canvas.translate(0f,lowerLimit+constraintDifference)
-        //canvas.scale(2.5f,2.5f)
+        canvas.scale(heightRatio,heightRatio)
 
-        paint.color = Color.DKGRAY
-        paint.strokeWidth = 20f
+        paint.color = Color.BLUE
+        paint.strokeWidth = 20f/heightRatio
         canvas.drawLine(0f, height - (upperLimit + constraintDifference), width.toFloat(), height - (upperLimit + constraintDifference), paint)
         canvas.drawLine(0f, height - (lowerLimit + constraintDifference), width.toFloat(), height - (lowerLimit + constraintDifference), paint)
 
         for (i in dataList.indices){
             paint.color = Color.GREEN
-            paint.strokeWidth = 10f
+            paint.strokeWidth = 10f/heightRatio
 
             if (i == 0) {
                 //Draw First Line
-                val startX = dataList[i].x
+                val startX = (dataList[i].x/heightRatio)*widthRatio
                 val startY = height-(dataList[i].y + constraintDifference)
-                val stopX = dataList[i + 1].x
+                val stopX = (dataList[i + 1].x/heightRatio)*widthRatio
                 val stopY = height-(dataList[i + 1].y + constraintDifference)
 
                 canvas.drawLine(startX, startY, stopX, stopY, paint)
 
                 paint.color = Color.RED
-                canvas.drawCircle(startX, startY, 12f, paint)
+                canvas.drawCircle(startX, startY, 12f/heightRatio, paint)
             } else if (i > 0 && i < dataList.size - 1) {
                 //Draw Middle Lines
 
-                val startX = dataList[i].x
+                val startX = (dataList[i].x/heightRatio)*widthRatio
                 val startY = height-(dataList[i].y+constraintDifference)
-                val stopX = dataList[i + 1].x
+                val stopX = (dataList[i + 1].x/heightRatio)*widthRatio
                 val stopY = height-(dataList[i + 1].y + constraintDifference)
                 canvas.drawLine(startX, startY, stopX, stopY, paint)
             } else if (i == dataList.size - 1) {
                 ////Draw Last Line -- END POINT
 
-                val startX = dataList[i].x
+                val startX = (dataList[i].x/heightRatio)*widthRatio
                 val startY = height-(dataList[i].y + constraintDifference)
 
                 paint.color = Color.RED
-                canvas.drawCircle(startX, startY, 12f, paint)
+                canvas.drawCircle(startX, startY, 12f/heightRatio, paint)
             }
         }
 
-        //canvas.restore()
+        canvas.restore()
 
     }
 

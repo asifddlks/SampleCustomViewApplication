@@ -28,7 +28,7 @@ class CustomViewActivity : AppCompatActivity() {
 
         customChartView.draw()*/
 
-        val dataList:MutableList<ChartModel> = ArrayList()
+        /*val dataList:MutableList<ChartModel> = ArrayList()
 
         dataList.add(ChartModel(0f,200f))
         dataList.add(ChartModel(50f,0f))
@@ -40,12 +40,12 @@ class CustomViewActivity : AppCompatActivity() {
         dataList.add(ChartModel(950f,720f,))
 
         customChartView.drawChart(dataList)
-        multiTouchView.drawChart(dataList)
+        multiTouchView.drawChart(dataList)*/
 
-        /*val dataList = prepareCustomData()
+        val dataList = prepareCustomData()
 
         customChartView.drawChart(dataList)
-        multiTouchView.drawChart(dataList)*/
+        multiTouchView.drawChart(dataList)
 
     }
 
@@ -55,13 +55,13 @@ class CustomViewActivity : AppCompatActivity() {
         val jsonObject = jsonString?.let { JSONObject(it) }
         val dataJSONArray = jsonObject?.getJSONArray("data")
 
-        for (i in 0 until (10 ?: 0)) {
+        for (i in 0 until (dataJSONArray?.length() ?: 0)) {
             val jsonObjectDataItem = dataJSONArray!!.getJSONObject(i)
 
             val time:String = jsonObjectDataItem.getString("time")
             val closePrice:Double = jsonObjectDataItem.getDouble("close")
 
-            list.add(ChartModel(i.toFloat()*100,closePrice.toFloat()))
+            list.add(ChartModel(i.toFloat(),closePrice.toFloat()))
         }
         return list
     }
