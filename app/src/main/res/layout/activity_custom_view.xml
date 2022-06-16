@@ -7,11 +7,13 @@
     tools:context=".CustomViewActivity">
 
     <com.asifddlks.samplecustomviewapplication.customView.CustomChartView
+        app:layout_constraintDimensionRatio="h,20:9"
         android:id="@+id/customChartView"
         android:layout_width="0dp"
-        android:layout_height="400dp"
+        android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.asifddlks.samplecustomviewapplication.customView.MultiTouchView
@@ -24,6 +26,7 @@
         app:layout_constraintBottom_toBottomOf="@id/customChartView"/>
 
     <com.asifddlks.samplecustomviewapplication.customView.CustomEditTextView
+        android:visibility="gone"
         android:id="@+id/customEditTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
