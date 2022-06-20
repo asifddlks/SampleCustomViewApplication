@@ -45,7 +45,18 @@ class CustomViewActivity : AppCompatActivity() {
         val dataList = prepareCustomData()
 
         customChartView.drawChart(dataList)
-        multiTouchView.drawChart(dataList)
+
+        multiTouchView.drawChart(dataList, object : TouchPointInteractor{
+            override fun touchOne(nearestPointIndex: Int, chartModel: ChartModel) {
+
+            }
+
+            override fun touchTwo(nearestPointIndex: Int, chartModel: ChartModel) {
+
+            }
+
+
+        })
 
     }
 
@@ -61,8 +72,13 @@ class CustomViewActivity : AppCompatActivity() {
             val time:String = jsonObjectDataItem.getString("time")
             val closePrice:Double = jsonObjectDataItem.getDouble("close")
 
-            list.add(ChartModel(i.toFloat(),closePrice.toFloat()))
+            list.add(ChartModel(time,closePrice))
         }
         return list
     }
+}
+
+interface TouchPointInteractor{
+    fun touchOne(nearestPointIndex: Int, chartModel: ChartModel)
+    fun touchTwo(nearestPointIndex: Int, chartModel: ChartModel)
 }

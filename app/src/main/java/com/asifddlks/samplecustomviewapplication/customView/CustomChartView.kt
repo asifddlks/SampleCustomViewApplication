@@ -68,31 +68,31 @@ class CustomChartView:View {
 
             if (i == 0) {
                 //Draw First Line
-                val startX = (dataList[i].x/heightRatio)*widthRatio
-                val startY = height-(dataList[i].y + constraintDifference)
-                val stopX = (dataList[i + 1].x/heightRatio)*widthRatio
-                val stopY = height-(dataList[i + 1].y + constraintDifference)
+                val startX = (i/heightRatio)*widthRatio
+                val startY = height-(dataList[i].closePrice + constraintDifference)
+                val stopX = ((i+1)/heightRatio)*widthRatio
+                val stopY = height-(dataList[i + 1].closePrice + constraintDifference)
 
-                canvas.drawLine(startX, startY, stopX, stopY, paint)
+                canvas.drawLine(startX, startY.toFloat(), stopX, stopY.toFloat(), paint)
 
                 paint.color = Color.RED
-                canvas.drawCircle(startX, startY, 12f/heightRatio, paint)
+                canvas.drawCircle(startX, startY.toFloat(), 12f/heightRatio, paint)
             } else if (i > 0 && i < dataList.size - 1) {
                 //Draw Middle Lines
 
-                val startX = (dataList[i].x/heightRatio)*widthRatio
-                val startY = height-(dataList[i].y+constraintDifference)
-                val stopX = (dataList[i + 1].x/heightRatio)*widthRatio
-                val stopY = height-(dataList[i + 1].y + constraintDifference)
-                canvas.drawLine(startX, startY, stopX, stopY, paint)
+                val startX = (i/heightRatio)*widthRatio
+                val startY = height-(dataList[i].closePrice+constraintDifference)
+                val stopX = ((i+1)/heightRatio)*widthRatio
+                val stopY = height-(dataList[i + 1].closePrice + constraintDifference)
+                canvas.drawLine(startX, startY.toFloat(), stopX, stopY.toFloat(), paint)
             } else if (i == dataList.size - 1) {
                 ////Draw Last Line -- END POINT
 
-                val startX = (dataList[i].x/heightRatio)*widthRatio
-                val startY = height-(dataList[i].y + constraintDifference)
+                val startX = (i/heightRatio)*widthRatio
+                val startY = height-(dataList[i].closePrice + constraintDifference)
 
                 paint.color = Color.RED
-                canvas.drawCircle(startX, startY, 12f/heightRatio, paint)
+                canvas.drawCircle(startX, startY.toFloat(), 12f/heightRatio, paint)
             }
         }
 
@@ -107,10 +107,14 @@ class CustomChartView:View {
     fun drawChart(dataList:List<ChartModel>){
         this.dataList = dataList
 
-        upperLimit = dataList.maxOf { it.y }
-        lowerLimit = dataList.minOf { it.y }
+        upperLimit = dataList.maxOf { it.closePrice }.toFloat()
+        lowerLimit = dataList.minOf { it.closePrice }.toFloat()
 
         invalidate()
+    }
+
+    fun setTouchInterface(){
+
     }
 
 

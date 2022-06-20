@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import com.asifddlks.samplecustomviewapplication.ChartModel
+import com.asifddlks.samplecustomviewapplication.TouchPointInteractor
 import kotlin.math.abs
 
 //
@@ -24,6 +25,7 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
     var isTouch = BooleanArray(MAX_POINT_COUNT)
 
     var dataList:List<ChartModel> = ArrayList()
+    lateinit var touchPointInteractor:TouchPointInteractor
 
     var upperLimit: Float = 0f
     var lowerLimit: Float = Float.MAX_VALUE
@@ -55,14 +57,14 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
         Log.d(this@MultiTouchView.javaClass.simpleName,"constraintDifference: ${constraintDifference}")
         Log.d(this@MultiTouchView.javaClass.simpleName,"heightRatio: ${heightRatio}")
         Log.d(this@MultiTouchView.javaClass.simpleName,"widthRatio: ${widthRatio}")
-        Log.d(this@MultiTouchView.javaClass.simpleName,"findNearestPoint(x[0],dataList).x: ${findNearestPoint(x[0],dataList).x}")
-        Log.d(this@MultiTouchView.javaClass.simpleName,"findNearestPoint(x[0],dataList).y: ${findNearestPoint(x[0],dataList).y}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"findNearestPoint(x[0],dataList).x: ${findNearestPoint(x[0],dataList).time}")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"findNearestPoint(x[0],dataList).y: ${findNearestPoint(x[0],dataList).closePrice}")
         Log.d(this@MultiTouchView.javaClass.simpleName,"x[0]: ${x[0]} || y[0]: ${y[0]}")
 
         if (isTouch[0]) {
-            val startX = findNearestPoint(x[0],dataList).x*widthRatio
+            val startX = findNearestPointIndex(x[0],dataList)*widthRatio
             val startY = 0f
-            val stopX = findNearestPoint(x[0],dataList).x*widthRatio
+            val stopX = findNearestPointIndex(x[0],dataList)*widthRatio
             val stopY = height.toFloat()
 
             paint.style = Paint.Style.STROKE
@@ -75,13 +77,15 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             paint.textSize = 20f
 
             val drawTextPositionX = startX+10
-            val drawTextPositionY = height - ((findNearestPoint(x[0],dataList).y-lowerLimit)*heightRatio)
-            canvas.drawText("x: ${findNearestPoint(x[0],dataList).x} y: ${findNearestPoint(x[0],dataList).y}",drawTextPositionX,drawTextPositionY,paint)
+            val drawTextPositionY = height - ((findNearestPoint(x[0],dataList).closePrice-lowerLimit)*heightRatio)
+            canvas.drawText("x: ${findNearestPoint(x[0],dataList).time} y: ${findNearestPoint(x[0],dataList).closePrice}",drawTextPositionX,drawTextPositionY.toFloat(),paint)
+
+            touchPointInteractor.touchOne(findNearestPointIndex(x[0],dataList),ChartModel(findNearestPoint(x[0],dataList).time,findNearestPoint(x[0],dataList).closePrice))
         }
         if (isTouch[1]) {
-            val startX = findNearestPoint(x[1],dataList).x*widthRatio
+            val startX = findNearestPointIndex(x[1],dataList)*widthRatio
             val startY = 0f
-            val stopX = findNearestPoint(x[1],dataList).x*widthRatio
+            val stopX = findNearestPointIndex(x[1],dataList)*widthRatio
             val stopY = height.toFloat()
 
             paint.style = Paint.Style.STROKE
@@ -93,26 +97,47 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             paint.color = Color.WHITE
             paint.textSize = 20f
             val drawTextPositionX = startX+10
-            val drawTextPositionY = height - ((findNearestPoint(x[1],dataList).y-lowerLimit)*heightRatio)
-            canvas.drawText("x: ${findNearestPoint(x[1],dataList).x} y: ${findNearestPoint(x[1],dataList).y}",drawTextPositionX,drawTextPositionY,paint)
+            val drawTextPositionY = height - ((findNearestPoint(x[1],dataList).closePrice-lowerLimit)*heightRatio)
+            canvas.drawText("x: ${findNearestPoint(x[1],dataList).time} y: ${findNearestPoint(x[1],dataList).closePrice}",drawTextPositionX,drawTextPositionY.toFloat(),paint)
+
+            touchPointInteractor.touchTwo(findNearestPointIndex(x[1],dataList),ChartModel(findNearestPoint(x[1],dataList).time,findNearestPoint(x[1],dataList).closePrice))
         }
     }
 
     private fun findNearestPoint(touchBarValue: Float, dataList: List<ChartModel>): ChartModel {
-        var nearestXValue = 0f
-        var nearestYValue = 0f
+        var nearestXValue = ""
+        var nearestYValue = 0.0
         var distance = Float.MAX_VALUE
-        for(data in dataList){
-            if(distance > abs(data.x - touchBarValue/widthRatio)){
-                distance = abs(data.x - touchBarValue/widthRatio)
-                nearestXValue = data.x
-                nearestYValue = data.y
+        for(i in dataList.indices){
+            if(distance > abs(i - touchBarValue/widthRatio)){
+                distance = abs(i - touchBarValue/widthRatio)
+                nearestXValue = dataList[i].time
+                nearestYValue = dataList[i].closePrice
 
                 //Log.d(this@MultiTouchView.javaClass.simpleName,"nearestXValue: ${nearestXValue} || nearestYValue: ${nearestYValue}")
 
             }
         }
         return ChartModel(nearestXValue,nearestYValue)
+    }
+
+    private fun findNearestPointIndex(touchBarValue: Float, dataList: List<ChartModel>): Int {
+        var nearestXValue = ""
+        var nearestYValue = 0.0
+        var index = 0
+        var distance = Float.MAX_VALUE
+        for(i in dataList.indices){
+            if(distance > abs(i - touchBarValue/widthRatio)){
+                distance = abs(i - touchBarValue/widthRatio)
+                nearestXValue = dataList[i].time
+                nearestYValue = dataList[i].closePrice
+                index = i
+
+                //Log.d(this@MultiTouchView.javaClass.simpleName,"nearestXValue: ${nearestXValue} || nearestYValue: ${nearestYValue}")
+
+            }
+        }
+        return index
     }
 
     override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
@@ -151,11 +176,12 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
         return true
     }
 
-    fun drawChart(dataList:List<ChartModel>){
+    fun drawChart(dataList:List<ChartModel>, touchPointInteractor:TouchPointInteractor){
         this.dataList = dataList
+        this.touchPointInteractor = touchPointInteractor
 
-        upperLimit = dataList.maxOf { it.y }
-        lowerLimit = dataList.minOf { it.y }
+        upperLimit = dataList.maxOf { it.closePrice }.toFloat()
+        lowerLimit = dataList.minOf { it.closePrice }.toFloat()
 
         invalidate()
     }
