@@ -4,13 +4,18 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.content.ContextCompat.getSystemService
 import com.asifddlks.samplecustomviewapplication.ChartModel
 import com.asifddlks.samplecustomviewapplication.TouchPointInteractor
 import kotlin.math.abs
+
 
 //
 // Created by Asif Ahmed on 14/6/22.
@@ -18,7 +23,7 @@ import kotlin.math.abs
 class MultiTouchView @JvmOverloads constructor(context: Context,
                      attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
     //In this test, handle maximum of 2 pointer
-    val MAX_POINT_COUNT = 2
+    val MAX_POINT_COUNT = 3
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     var x = FloatArray(MAX_POINT_COUNT)
     var y = FloatArray(MAX_POINT_COUNT)
@@ -68,8 +73,8 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             val stopY = height.toFloat()
 
             paint.style = Paint.Style.STROKE
-            paint.strokeWidth = 10f
-            paint.color = Color.BLUE
+            paint.strokeWidth = 05f
+            paint.color = Color.GRAY
             canvas.drawLine(startX,startY,stopX,stopY,paint)
 
             paint.style = Paint.Style.FILL
@@ -82,6 +87,9 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
 
             touchPointInteractor.touchOne(findNearestPointIndex(x[0],dataList),ChartModel(findNearestPoint(x[0],dataList).time,findNearestPoint(x[0],dataList).closePrice))
         }
+        else{
+            touchPointInteractor.touchOneRemoved()
+        }
         if (isTouch[1]) {
             val startX = findNearestPointIndex(x[1],dataList)*widthRatio
             val startY = 0f
@@ -89,7 +97,7 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             val stopY = height.toFloat()
 
             paint.style = Paint.Style.STROKE
-            paint.strokeWidth = 10f
+            paint.strokeWidth = 05f
             paint.color = Color.RED
             canvas.drawLine(startX,startY,stopX,stopY,paint)
 
@@ -101,6 +109,9 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             canvas.drawText("x: ${findNearestPoint(x[1],dataList).time} y: ${findNearestPoint(x[1],dataList).closePrice}",drawTextPositionX,drawTextPositionY.toFloat(),paint)
 
             touchPointInteractor.touchTwo(findNearestPointIndex(x[1],dataList),ChartModel(findNearestPoint(x[1],dataList).time,findNearestPoint(x[1],dataList).closePrice))
+        }
+        else{
+            touchPointInteractor.touchTwoRemoved()
         }
     }
 
@@ -132,6 +143,19 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
                 nearestXValue = dataList[i].time
                 nearestYValue = dataList[i].closePrice
                 index = i
+
+                /*val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v!!.vibrate(
+                        VibrationEffect.createOneShot(
+                            20,
+                            VibrationEffect.EFFECT_TICK
+                        )
+                    )
+                } else {
+                    //deprecated in API 26
+                    v!!.vibrate(30)
+                }*/
 
                 //Log.d(this@MultiTouchView.javaClass.simpleName,"nearestXValue: ${nearestXValue} || nearestYValue: ${nearestYValue}")
 

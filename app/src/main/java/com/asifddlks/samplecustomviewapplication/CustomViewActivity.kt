@@ -44,19 +44,29 @@ class CustomViewActivity : AppCompatActivity() {
 
         val dataList = prepareCustomData()
 
-        customChartView.drawChart(dataList)
-
-        multiTouchView.drawChart(dataList, object : TouchPointInteractor{
+        val touchPointInteractor = object : TouchPointInteractor{
             override fun touchOne(nearestPointIndex: Int, chartModel: ChartModel) {
+                customChartView.touchOne(nearestPointIndex, chartModel)
+            }
 
+            override fun touchOneRemoved() {
+                customChartView.touchOneRemoved()
             }
 
             override fun touchTwo(nearestPointIndex: Int, chartModel: ChartModel) {
+                customChartView.touchTwo(nearestPointIndex, chartModel)
+            }
 
+            override fun touchTwoRemoved() {
+                customChartView.touchTwoRemoved()
             }
 
 
-        })
+        }
+
+        customChartView.drawChart(dataList)
+
+        multiTouchView.drawChart(dataList, touchPointInteractor)
 
     }
 
@@ -80,5 +90,7 @@ class CustomViewActivity : AppCompatActivity() {
 
 interface TouchPointInteractor{
     fun touchOne(nearestPointIndex: Int, chartModel: ChartModel)
+    fun touchOneRemoved()
     fun touchTwo(nearestPointIndex: Int, chartModel: ChartModel)
+    fun touchTwoRemoved()
 }

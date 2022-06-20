@@ -5,14 +5,17 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import com.asifddlks.samplecustomviewapplication.ChartModel
+import com.asifddlks.samplecustomviewapplication.R
+import kotlin.math.abs
 
 
 //
 // Created by Asif Ahmed on 23/5/22.
 //
-class CustomChartView:View {
+class CustomChartView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private var paint:Paint = Paint()
 
@@ -28,9 +31,7 @@ class CustomChartView:View {
 
     val lineStrokeWidth = 2f
 
-    constructor(context: Context, attrs: AttributeSet):super(context,attrs){
-        //paint.color = Color.BLUE
-    }
+    var isMultiTouch:Boolean = false
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -58,13 +59,29 @@ class CustomChartView:View {
         canvas.scale(heightRatio,heightRatio)
 
         paint.color = Color.BLUE
-        paint.strokeWidth = 20f/heightRatio
+        paint.strokeWidth = 2f/heightRatio
         canvas.drawLine(0f, height - (upperLimit + constraintDifference), width.toFloat(), height - (upperLimit + constraintDifference), paint)
         canvas.drawLine(0f, height - (lowerLimit + constraintDifference), width.toFloat(), height - (lowerLimit + constraintDifference), paint)
 
         for (i in dataList.indices){
-            paint.color = Color.GREEN
             paint.strokeWidth = lineStrokeWidth/heightRatio
+
+            if (touchOneNearestPointIndex != null && touchTwoNearestPointIndex != null && inColorRange(touchOneNearestPointIndex,i)) {
+                isMultiTouch = true
+                paint.color = context.getColor(R.color.orange_level_1)
+
+            }
+            else if (touchOneNearestPointIndex != null && touchTwoNearestPointIndex == null  && inColorRange(touchOneNearestPointIndex,i)) {
+                isMultiTouch = false
+                paint.color = context.getColor(R.color.orange_level_1)
+            }
+            else if (touchOneNearestPointIndex == null && touchTwoNearestPointIndex != null && inColorRange(touchTwoNearestPointIndex,i)) {
+                isMultiTouch = false
+                paint.color = context.getColor(R.color.orange_level_1)
+            }
+            else{
+                paint.color = context.getColor(R.color.orange_level_2)
+            }
 
             if (i == 0) {
                 //Draw First Line
@@ -113,10 +130,64 @@ class CustomChartView:View {
         invalidate()
     }
 
-    fun setTouchInterface(){
+    fun inColorRange(touchNearestPointIndex:Int?, currentDataListIndex:Int):Boolean{
+
+        var preOffsetValue = 0
+        var postOffsetValue = 0
+
+        if(isMultiTouch){
+            Log.d(this@CustomChartView.javaClass.simpleName,"touchOneNearestPointIndex: ${touchOneNearestPointIndex}")
+            Log.d(this@CustomChartView.javaClass.simpleName,"touchTwoNearestPointIndex: ${touchTwoNearestPointIndex}")
+
+            if((touchTwoNearestPointIndex ?: 0) - (touchOneNearestPointIndex ?: 0)>=0){
+                preOffsetValue = 0
+                postOffsetValue = abs((touchTwoNearestPointIndex ?: 0) - (touchOneNearestPointIndex ?: 0))
+            }
+            else{
+                preOffsetValue = abs((touchTwoNearestPointIndex ?: 0) - (touchOneNearestPointIndex ?: 0))
+                postOffsetValue = 0
+            }
+        }
+        else{
+            preOffsetValue = 10
+            postOffsetValue = 10
+        }
+
+        return if(touchNearestPointIndex==null){ false } else (touchNearestPointIndex in currentDataListIndex-postOffsetValue..currentDataListIndex+preOffsetValue)
 
     }
 
+    private var touchOneNearestPointIndex:Int? = null
+    private var touchOneChartModel:ChartModel? = null
+
+    private var touchTwoNearestPointIndex:Int? = null
+    private var touchTwoChartModel:ChartModel? = null
+
+    fun touchOne(nearestPointIndex: Int, chartModel: ChartModel) {
+        this.touchOneNearestPointIndex = nearestPointIndex
+        this.touchOneChartModel = chartModel
+
+        invalidate()
+    }
+
+    fun touchOneRemoved(){
+        touchOneNearestPointIndex = null
+        touchOneChartModel = null
+
+        invalidate()
+    }
+    fun touchTwo(nearestPointIndex: Int, chartModel: ChartModel){
+        this.touchTwoNearestPointIndex = nearestPointIndex
+        this.touchTwoChartModel = chartModel
+
+        invalidate()
+    }
+    fun touchTwoRemoved(){
+        touchTwoNearestPointIndex = null
+        touchTwoChartModel = null
+
+        invalidate()
+    }
 
 
 }
