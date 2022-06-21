@@ -1,9 +1,7 @@
 package com.asifddlks.samplecustomviewapplication.customView
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -23,6 +21,7 @@ import kotlin.math.abs
 class MultiTouchView @JvmOverloads constructor(context: Context,
                      attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr) {
     //In this test, handle maximum of 2 pointer
+    val TOP_PADDING_OFFSET_VALUE = 1f
     val MAX_POINT_COUNT = 3
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     var x = FloatArray(MAX_POINT_COUNT)
@@ -68,7 +67,7 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
 
         if (isTouch[0]) {
             val startX = findNearestPointIndex(x[0],dataList)*widthRatio
-            val startY = 0f
+            val startY = TOP_PADDING_OFFSET_VALUE*heightRatio
             val stopX = findNearestPointIndex(x[0],dataList)*widthRatio
             val stopY = height.toFloat()
 
@@ -80,11 +79,14 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             paint.style = Paint.Style.FILL
             paint.color = Color.WHITE
             paint.textSize = 20f
+            paint.textAlign = Paint.Align.CENTER
 
-            val drawTextPositionX = startX+10
-            val drawTextPositionY = height - ((findNearestPoint(x[0],dataList).closePrice-lowerLimit)*heightRatio)
+            val textPosition = calculateTextPosition(startX)
+            //val drawTextPositionX = startX+10
+            //val drawTextPositionY = height - ((findNearestPoint(x[0],dataList).closePrice-lowerLimit)*heightRatio)
+            //val drawTextPositionY = 0f+20f
             //canvas.drawText("x: ${findNearestPoint(x[0],dataList).time} y: ${findNearestPoint(x[0],dataList).closePrice}",drawTextPositionX,drawTextPositionY.toFloat(),paint)
-            canvas.drawText("x: ${findNearestPoint(x[0],dataList).time} y: ${findNearestPoint(x[0],dataList).closePrice}",drawTextPositionX,0f+20f,paint)
+            canvas.drawText("x: ${findNearestPoint(x[0],dataList).time} y: ${findNearestPoint(x[0],dataList).closePrice}",textPosition.x, textPosition.y,paint)
 
             touchPointInteractor.touchOne(findNearestPointIndex(x[0],dataList),ChartModel(findNearestPoint(x[0],dataList).time,findNearestPoint(x[0],dataList).closePrice))
         }
@@ -93,7 +95,7 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
         }
         if (isTouch[1]) {
             val startX = findNearestPointIndex(x[1],dataList)*widthRatio
-            val startY = 0f
+            val startY = TOP_PADDING_OFFSET_VALUE*heightRatio
             val stopX = findNearestPointIndex(x[1],dataList)*widthRatio
             val stopY = height.toFloat()
 
@@ -105,11 +107,12 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
             paint.style = Paint.Style.FILL
             paint.color = Color.WHITE
             paint.textSize = 20f
-            val drawTextPositionX = startX+10
-            val drawTextPositionY = height - ((findNearestPoint(x[1],dataList).closePrice-lowerLimit)*heightRatio)
+            paint.textAlign = Paint.Align.CENTER
+            val textPosition = calculateTextPosition(startX)
+            //val drawTextPositionY = height - ((findNearestPoint(x[1],dataList).closePrice-lowerLimit)*heightRatio)
+            //val drawTextPositionY = 0f+20f
             //canvas.drawText("x: ${findNearestPoint(x[1],dataList).time} y: ${findNearestPoint(x[1],dataList).closePrice}",drawTextPositionX,drawTextPositionY.toFloat(),paint)
-            canvas.drawText("x: ${findNearestPoint(x[1],dataList).time} y: ${findNearestPoint(x[1],dataList).closePrice}",drawTextPositionX,
-                0f+20f,paint)
+            canvas.drawText("x: ${findNearestPoint(x[1],dataList).time} y: ${findNearestPoint(x[1],dataList).closePrice}",textPosition.x, textPosition.y,paint)
 
             touchPointInteractor.touchTwo(findNearestPointIndex(x[1],dataList),ChartModel(findNearestPoint(x[1],dataList).time,findNearestPoint(x[1],dataList).closePrice))
         }
@@ -207,10 +210,35 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
         this.dataList = dataList
         this.touchPointInteractor = touchPointInteractor
 
-        val TOP_PADDING_OFFSET_VALUE = 2
         upperLimit = dataList.maxOf { it.closePrice }.toFloat() + TOP_PADDING_OFFSET_VALUE
         lowerLimit = dataList.minOf { it.closePrice }.toFloat()
 
         invalidate()
     }
+
+    private fun calculateTextPosition(startX: Float): PointF {
+        var position = PointF()
+
+        var startPositionX = startX
+        var positionConstraint = 150f
+
+        Log.d(this@MultiTouchView.javaClass.simpleName,"startPositionX: $startPositionX")
+
+        if(startPositionX<200){
+
+            //positionConstraint = 600f - startPositionX
+            startPositionX = positionConstraint
+        }
+        else if(startPositionX>900){
+            startPositionX = width-positionConstraint
+        }
+        position.x = startPositionX
+
+
+        position.y = 0f+20f
+
+        return position
+
+    }
+
 }

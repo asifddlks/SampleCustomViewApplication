@@ -17,6 +17,7 @@ import kotlin.math.abs
 //
 class CustomChartView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
+    val TOP_PADDING_OFFSET_VALUE = 1f
     private var paint:Paint = Paint()
 
     var dataList:List<ChartModel> = ArrayList()
@@ -134,7 +135,6 @@ class CustomChartView(context: Context, attrs: AttributeSet) : View(context, att
     fun drawChart(dataList:List<ChartModel>){
         this.dataList = dataList
 
-        val TOP_PADDING_OFFSET_VALUE = 2f
         upperLimit = dataList.maxOf { it.closePrice }.toFloat() + TOP_PADDING_OFFSET_VALUE
         lowerLimit = dataList.minOf { it.closePrice }.toFloat()
 
