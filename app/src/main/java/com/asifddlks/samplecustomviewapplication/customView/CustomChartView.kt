@@ -60,8 +60,8 @@ class CustomChartView(context: Context, attrs: AttributeSet) : View(context, att
 
         paint.color = Color.BLUE
         paint.strokeWidth = 2f/heightRatio
-        canvas.drawLine(0f, height - (upperLimit + constraintDifference), width.toFloat(), height - (upperLimit + constraintDifference), paint)
-        canvas.drawLine(0f, height - (lowerLimit + constraintDifference), width.toFloat(), height - (lowerLimit + constraintDifference), paint)
+        //canvas.drawLine(0f, height - (upperLimit + constraintDifference), width.toFloat(), height - (upperLimit + constraintDifference), paint)
+        //canvas.drawLine(0f, height - (lowerLimit + constraintDifference), width.toFloat(), height - (lowerLimit + constraintDifference), paint)
 
         for (i in dataList.indices){
             paint.strokeWidth = lineStrokeWidth/heightRatio
@@ -92,8 +92,8 @@ class CustomChartView(context: Context, attrs: AttributeSet) : View(context, att
 
                 canvas.drawLine(startX, startY.toFloat(), stopX, stopY.toFloat(), paint)
 
-                paint.color = Color.RED
-                canvas.drawCircle(startX, startY.toFloat(), 12f/heightRatio, paint)
+                //paint.color = Color.RED
+                //canvas.drawCircle(startX, startY.toFloat(), 12f/heightRatio, paint)
             } else if (i > 0 && i < dataList.size - 1) {
                 //Draw Middle Lines
 
@@ -108,8 +108,8 @@ class CustomChartView(context: Context, attrs: AttributeSet) : View(context, att
                 val startX = (i/heightRatio)*widthRatio
                 val startY = height-(dataList[i].closePrice + constraintDifference)
 
-                paint.color = Color.RED
-                canvas.drawCircle(startX, startY.toFloat(), 12f/heightRatio, paint)
+                //paint.color = Color.RED
+                //canvas.drawCircle(startX, startY.toFloat(), 12f/heightRatio, paint)
             }
         }
 
