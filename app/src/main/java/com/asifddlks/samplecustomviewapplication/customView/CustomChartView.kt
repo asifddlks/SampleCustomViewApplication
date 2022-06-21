@@ -113,6 +113,16 @@ class CustomChartView(context: Context, attrs: AttributeSet) : View(context, att
             }
         }
 
+        Log.d(this@CustomChartView.javaClass.simpleName,"width: ${width}")
+        Log.d(this@CustomChartView.javaClass.simpleName,"height: ${height}")
+        Log.d(this@CustomChartView.javaClass.simpleName,"upperLimit: ${upperLimit}")
+        Log.d(this@CustomChartView.javaClass.simpleName,"lowerLimit: ${lowerLimit}")
+        Log.d(this@CustomChartView.javaClass.simpleName,"constraintDifference: ${constraintDifference}")
+        Log.d(this@CustomChartView.javaClass.simpleName,"heightRatio: ${heightRatio}")
+        Log.d(this@CustomChartView.javaClass.simpleName,"widthRatio: ${widthRatio}")
+
+        Log.d(this@CustomChartView.javaClass.simpleName,"widthRatio: ${widthRatio}")
+
         canvas.restore()
 
     }
@@ -124,7 +134,8 @@ class CustomChartView(context: Context, attrs: AttributeSet) : View(context, att
     fun drawChart(dataList:List<ChartModel>){
         this.dataList = dataList
 
-        upperLimit = dataList.maxOf { it.closePrice }.toFloat()
+        val TOP_PADDING_OFFSET_VALUE = 2f
+        upperLimit = dataList.maxOf { it.closePrice }.toFloat() + TOP_PADDING_OFFSET_VALUE
         lowerLimit = dataList.minOf { it.closePrice }.toFloat()
 
         invalidate()
@@ -136,8 +147,8 @@ class CustomChartView(context: Context, attrs: AttributeSet) : View(context, att
         var postOffsetValue = 0
 
         if(isMultiTouch){
-            Log.d(this@CustomChartView.javaClass.simpleName,"touchOneNearestPointIndex: ${touchOneNearestPointIndex}")
-            Log.d(this@CustomChartView.javaClass.simpleName,"touchTwoNearestPointIndex: ${touchTwoNearestPointIndex}")
+            //Log.d(this@CustomChartView.javaClass.simpleName,"touchOneNearestPointIndex: ${touchOneNearestPointIndex}")
+            //Log.d(this@CustomChartView.javaClass.simpleName,"touchTwoNearestPointIndex: ${touchTwoNearestPointIndex}")
 
             if((touchTwoNearestPointIndex ?: 0) - (touchOneNearestPointIndex ?: 0)>=0){
                 preOffsetValue = 0

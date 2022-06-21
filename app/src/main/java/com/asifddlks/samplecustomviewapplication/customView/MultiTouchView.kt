@@ -207,7 +207,8 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
         this.dataList = dataList
         this.touchPointInteractor = touchPointInteractor
 
-        upperLimit = dataList.maxOf { it.closePrice }.toFloat()
+        val TOP_PADDING_OFFSET_VALUE = 2
+        upperLimit = dataList.maxOf { it.closePrice }.toFloat() + TOP_PADDING_OFFSET_VALUE
         lowerLimit = dataList.minOf { it.closePrice }.toFloat()
 
         invalidate()
