@@ -233,8 +233,14 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
                         y[id] = motionEvent.getY(i)
                     }
                     when (action) {
-                        MotionEvent.ACTION_DOWN -> isTouch[pointerId] = true
-                        MotionEvent.ACTION_POINTER_DOWN -> isTouch[pointerId] = true
+                        MotionEvent.ACTION_DOWN -> {
+                            isTouch[pointerId] = true
+                            touchPointInteractor.vibrate()
+                        }
+                        MotionEvent.ACTION_POINTER_DOWN -> {
+                            isTouch[pointerId] = true
+                            touchPointInteractor.vibrate()
+                        }
                         MotionEvent.ACTION_MOVE -> isTouch[pointerId] = true
                         MotionEvent.ACTION_UP -> isTouch[pointerId] = false
                         MotionEvent.ACTION_POINTER_UP -> isTouch[pointerId] = false

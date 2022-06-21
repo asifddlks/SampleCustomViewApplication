@@ -2,6 +2,7 @@ package com.asifddlks.samplecustomviewapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import com.asifddlks.samplecustomviewapplication.customView.CustomChartView
 import com.asifddlks.samplecustomviewapplication.customView.CustomEditTextView
 import com.asifddlks.samplecustomviewapplication.customView.MultiTouchView
@@ -61,6 +62,11 @@ class CustomViewActivity : AppCompatActivity() {
                 customChartView.touchTwoRemoved()
             }
 
+            override fun vibrate() {
+                window.decorView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING)
+
+            }
+
 
         }
 
@@ -93,4 +99,5 @@ interface TouchPointInteractor{
     fun touchOneRemoved()
     fun touchTwo(nearestPointIndex: Int, chartModel: ChartModel)
     fun touchTwoRemoved()
+    fun vibrate()
 }
