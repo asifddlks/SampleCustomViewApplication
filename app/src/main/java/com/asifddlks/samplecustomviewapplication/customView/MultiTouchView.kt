@@ -218,11 +218,16 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
 
     override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
 
-        val pointerIndex = (motionEvent.action and MotionEvent.ACTION_POINTER_ID_MASK shr MotionEvent.ACTION_POINTER_ID_SHIFT)
+        //val pointerIndex = (motionEvent.action and MotionEvent.ACTION_POINTER_ID_MASK shr MotionEvent.ACTION_POINTER_ID_SHIFT)
+        val pointerIndex = (motionEvent.action and MotionEvent.ACTION_POINTER_INDEX_MASK shr MotionEvent.ACTION_POINTER_INDEX_SHIFT)
         val pointerId = motionEvent.getPointerId(pointerIndex)
         val action = motionEvent.action and MotionEvent.ACTION_MASK
         val pointCnt = motionEvent.pointerCount
         Log.d(this@MultiTouchView.javaClass.simpleName,"pointCnt: $pointCnt")
+        Log.d(this@MultiTouchView.javaClass.simpleName,"action: $action")
+        if(action != 2){
+            Log.d(this@MultiTouchView.javaClass.simpleName,"action filter 2: $action")
+        }
 
         try {
             if (pointCnt <= MAX_POINT_COUNT) {
@@ -241,10 +246,18 @@ class MultiTouchView @JvmOverloads constructor(context: Context,
                             isTouch[pointerId] = true
                             touchPointInteractor.vibrate()
                         }
-                        MotionEvent.ACTION_MOVE -> isTouch[pointerId] = true
-                        MotionEvent.ACTION_UP -> isTouch[pointerId] = false
+                        MotionEvent.ACTION_MOVE -> {
+                            isTouch[pointerId] = true
+                            parent?.let { it.requestDisallowInterceptTouchEvent(true) }
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            isTouch[pointerId] = false
+                            parent?.let { it.requestDisallowInterceptTouchEvent(false) }
+                        }
                         MotionEvent.ACTION_POINTER_UP -> isTouch[pointerId] = false
-                        MotionEvent.ACTION_CANCEL -> isTouch[pointerId] = false
+                        MotionEvent.ACTION_CANCEL -> {
+                            isTouch[pointerId] = false
+                        }
                         else -> isTouch[pointerId] = false
                     }
                 }
